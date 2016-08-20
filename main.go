@@ -1,10 +1,12 @@
 package main
 
 import (
-	"./lib/guild"
 	"encoding/json"
 	"log"
 	"os"
+
+	"github.com/pcittadini/battlego/lib/characters"
+	"github.com/pcittadini/battlego/lib/guild"
 )
 
 func main() {
@@ -46,7 +48,24 @@ func main() {
 			log.Println("[ ERROR ] " + err.Error())
 		}
 
-		log.Print(guild.Members)
+		// log.Print(guild.Members)
+		for _, character := range guild.Members {
+			//go func (){
+			details, err := characters.GetCharacterDetails(character.Character.Name)
+			if err != nil {
+				log.Println("[ ERROR ] " + err.Error())
+			}
+
+			log.Println("[elasticsearch] pushing ../.. " + character.Character.Name + " details ")
+			_, s, err := characters.PushCharacterToEs(details)
+			if err != nil {
+				log.Println("[ ERROR ] " + err.Error())
+			}
+
+			log.Print("[elasticsearch] " + s)
+			//}()
+
+		}
 	}
 
 }

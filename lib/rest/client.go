@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -23,9 +24,10 @@ type Endpoint struct {
 }
 
 type Response struct {
-	TimeTaken string
-	Endpoint  Endpoint
-	Result    string
+	TimeTaken  string
+	Endpoint   Endpoint
+	Result     string
+	StatusCode string
 }
 
 // Latency returns the endpoint latency number
@@ -119,6 +121,7 @@ func (endpoint Endpoint) Do() (R Response, err error) {
 	R.Endpoint = endpoint
 	R.TimeTaken = elapsed.String()
 	R.Result = res
+	R.StatusCode = strconv.Itoa(statusCode)
 
 	return R, nil
 }

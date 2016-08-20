@@ -1,7 +1,7 @@
 package guild
 
 import (
-	"../rest"
+	"github.com/pcittadini/battlego/lib/rest"
 	"os"
 )
 
@@ -17,29 +17,25 @@ func GetGuildDetails(name string) (details string, err error) {
 	res, err := r.Do()
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	return res.Result, nil
 }
 
-func GetCharacterDetails() {
-	return
-}
-
-func PushGuildToEs(guildDetails string) (err error) {
+func PushGuildToEs(guildDetails string) (res string, statuscode string, err error) {
 
 	r := new(rest.Endpoint)
 	r.Host = "http://localhost:9200"
-	r.Path = "/guilds/"
-	r.Method = "PUT"
+	r.Path = "/guilds/memberlist/?pretty"
+	r.Method = "POST"
 
 	r.Body = guildDetails
 
-	res, err := r.Do()
+	response, err := r.Do()
 	if err != nil {
-		return err
+		return "", response.StatusCode, err
 	}
 
-	return res.Result, nil
+	return response.Result, response.StatusCode, nil
 }
